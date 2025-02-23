@@ -1,0 +1,207 @@
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+    text-align: center
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* --------------------------------------------------------- */
+
+
+/* Setting the font family for the page */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: 	#f6f6f4;
+    color: #2f3d4c;
+}
+
+/* Header Styles */
+header {
+    background-color: #2f3d4c;
+    color: 		#f6f6f4;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+header p {
+    font-size: 1.2em;
+}
+
+/* Main Section Styles */
+main {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: #f6f6f4;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+section {
+    margin-bottom: 20px;
+}
+
+section h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    color: #2f3d4c;
+}
+
+section p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+/* Footer Styles */
+footer {
+    background-color: 	#2f3d4c;
+    color: #f6f6f4;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    margin-top: 15px;
+}
+
+footer p {
+    font-size: 1em;
+}
+
+#nav-menu {
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center;
+    list-style: none;
+}
+#nav-menu li:hover {
+    transform: scale(140%);
+    transition: all 0.4s ease-in-out;
+}
+
+#products-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 50px;
+    align-items: flex-start;
+    list-style: none;
+    width: 100%;  
+    min-height: 100%;  
+    padding: 15;  
+    margin-bottom: 5%;
+}
+
+#products-list li {
+    width: 400px; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: border-box; 
+    gap: 25px;
+
+}
+
+img {
+    max-width: 200px;
+    clip-path: circle(50%);
+    transition: all 0.7s ease-in-out;
+}
+img:hover {
+    max-width: 250px;
+    clip-path: circle(80%);
+
+}
+
+/*todo https://www.color-hex.com/color-palette/78917  COLORS */
+
+
+button {
+    background-color: #979fa5; 
+    color: white;
+    font-size: 16px; 
+    padding: 10px 20px;
+    border: 2px solid #979fa5;
+    border-radius: 5px;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+  }
+  
+
+  button:hover {
+    color: 	#edeae5;
+    background-color: 	#2f3d4c; 
+    border-color: #7f8a92; 
+    transform: scale(1.05); 
+  }
+  
+
+  button:focus {
+    outline: none; 
+    box-shadow: 0 0 5px rgba(151, 159, 165, 0.8); 
+  }
+  
+
+  button:active {
+    background-color: #6c777d;
+    border-color: #6c777d; 
+    transform: scale(1); 
+  }
+
+h3 {
+    color: #2f3d4c; 
+    font-size: large;
+    font-weight: bold;
+}
