@@ -1,15 +1,16 @@
 let urlAll = 'https://project-break-2-2025.onrender.com/products'
+let urlDash = 'https://project-break-2-2025.onrender.com/dashboard'
 const productList = document.getElementById("products-list");
+const productDesc = document.getElementById("product-description");
 
 const remeras = document.getElementById("Remeras");
 const pantalones = document.getElementById("Pantalones");
 const zapatos = document.getElementById("Zapatos");
 const accesorios = document.getElementById("Accesorios");
-const agregarProducto = document.getElementById("Agregar producto");
-const logout = document.getElementById("Logout");
-const login = document.getElementById("Login");
-
-
+const agregarProducto = document.getElementById("agregarProducto");
+const logoutLink = document.getElementById("Logout");
+const loginLink = document.getElementById("Login");
+const formContainer = document.getElementById("form-container");
 
 const apiCall = async (url) => {
     try {
@@ -24,9 +25,15 @@ const apiCall = async (url) => {
 }};
 
 //* FUNCTIONS
+
+const clearAll = () => {
+    productList.innerHTML = '';
+    productDesc.innerHTML = '';
+    formContainer.style.display = 'none';
+}
 const showAll = async () => {
     
-    productList.innerHTML = '';
+    clearAll()
 
     const data = await apiCall(urlAll);
 
@@ -49,55 +56,35 @@ const showAll = async () => {
 
 };
 showAll();
+
+let buttonEdit;
 const showById = async (id) => {
-    productList.innerHTML = '';
+    clearAll()
 
     const product = await apiCall(`${urlAll}/${id}`);
 
-    const productLi = document.createElement("li");
+    productDesc.innerHTML = `
+        <li><img src="${product.imagen}" alt="Imagen ${product.nombre}"></li>
+        <li><h3>${product.nombre}</h3></li>
+        <li>${product.descripcion}</li>
+        <li>Talla: ${product.talla}</li>
+        <li>${product.precio} €</li>
+    `;
 
-    const imageLi = document.createElement("li");
-    const image = document.createElement("img");
-    image.src = product.imagen;
-    image.alt = `Imagen ${product.nombre}`;
-    imageLi.appendChild(image);
-
-    const nameLi = document.createElement("li");
-    const name = document.createElement("h3");
-    name.textContent = product.nombre;
-    nameLi.appendChild(name);
-
-    const descriptionLi = document.createElement("li");
-    descriptionLi.textContent = product.descripcion;
-
-    const sizeLi = document.createElement("li");
-    sizeLi.textContent = `Talla: ${product.talla}`;
-
-    const priceLi = document.createElement("li");
-    priceLi.textContent = `${product.precio} €`;
-
+    buttonEdit = document.createElement("button");
+    buttonEdit.textContent = "Edit Product";
+    buttonEdit.setAttribute("data-id", product._id);
     const buttonLi = document.createElement("li");
-    const button = document.createElement("button");
-    button.textContent = "Edit Product";
-    button.setAttribute("data-id", product._id);
-    buttonLi.appendChild(button);
-
-    productLi.appendChild(imageLi);
-    productLi.appendChild(nameLi);
-    productLi.appendChild(descriptionLi);
-    productLi.appendChild(sizeLi);
-    productLi.appendChild(priceLi);
-    productLi.appendChild(buttonLi);
-
-    productList.appendChild(productLi);
+    buttonLi.appendChild(buttonEdit);
+    productDesc.appendChild(buttonLi);
 };
 const showByCategory = async (category) => {
     
-    productList.innerHTML = '';
+    clearAll()
 
     const data = await apiCall(urlAll);
     const filterCategory = data.filter(array => array.categoria === category);
-    
+
     for (const element of filterCategory) {
         try {
 
@@ -116,6 +103,7 @@ const showByCategory = async (category) => {
     }
 
 };
+
 
 //* LINKS
 remeras.addEventListener("click", (event) => {
@@ -136,9 +124,59 @@ accesorios.addEventListener("click", (event) => {
 });
 
 //* EVENTS
+
+//?Details button
 productList.addEventListener("click", (event) => {
     if (event.target.tagName === "BUTTON") {
         const productId = event.target.getAttribute("data-id");
         showById(productId);
     }
 });
+//?Edit form
+document.addEventListener("click", async (event) => {
+
+    if (event.target === buttonEdit) {
+        
+        const productId = buttonEdit.getAttribute("data-id");
+
+        try {
+            const response = await fetch(`${urlDash}/${productId}/edit`);
+            const formHtml = await response.text();
+
+            formContainer.innerHTML = formHtml; 
+        } catch (error) {
+            //! SI NO ESTA LOGEADO; REDIRECT A LOGIN
+            console.error("Error fetching form:", error);
+        }
+    }
+});
+
+
+/* //! DOESNT WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+loginLink.addEventListener("click", function(event) {
+    const loginForm = `
+        <h2>Login</h2>
+        <input type="hidden" name="_method" value="POST">
+        <input type="email" name="email" placeholder="Email" required autocomplete="email">
+        <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+        <button type="submit">Login</button>
+        <a href="/register">Create an Account</a>
+        `;
+    clearAll()
+    event.preventDefault(); 
+    formContainer.innerHTML = loginForm;
+});
+ */
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const agregarProducto = document.getElementById("AgregarProducto");
+    console.log(agregarProducto); // Should log the <a> element
+});
+
+//*Evento edit product
+//*Evento agregar producto
+
+//*Pagina login
+//*Pagina Create account
+//*Pagina logout
