@@ -1,43 +1,50 @@
 let urlAll = 'https://project-break-2-2025.onrender.com/dashboard'
 
 const divRender = document.getElementById("div-render");
+const productList = document.createElement("ul");
+productList.id = "products-list";
+const productDesc = document.createElement("ul")
+productDesc.id = "product-description";
 
-//*links
 const productos = document.getElementById("Productos");
 const remeras = document.getElementById("Remeras");
 const pantalones = document.getElementById("Pantalones");
 const zapatos = document.getElementById("Zapatos");
 const accesorios = document.getElementById("Accesorios");
 const agregarProducto = document.getElementById("agregar-producto")
-//*links
 
-const productList = document.createElement("ul");
-productList.id = "products-list";
-const productDesc = document.createElement("ul")
-productDesc.id = "product-description";
-
-// todo ----- NAVIGATION AND CLEARING DIV --------- //
-async function navigateTo(page) {
-    try {
-        const response = await fetch(`./pages/${page}.html`);
-        if (!response.ok) throw new Error("Page not found");
-
-        const html = await response.text();
-        divRender.innerHTML = html;
-        history.pushState(null, '', `./${page}`); 
-        //! ESTO
-    } catch (error) {
-        
-        console.error("Error loading page:", error);
-        divRender.innerHTML = "<p>Page not found.</p>";
-    }
-}
 const clearAll = () => {
     divRender.innerHTML = '';
     productList.innerHTML = '';
 }
+const showSuccessMessage = (message, where) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    messageDiv.style.color = "green";
+    messageDiv.style.fontSize = "50px";
+    messageDiv.style.fontWeight = "bold";
+    messageDiv.style.marginBot = "20px";
+    
+    where.appendChild(messageDiv);
 
-// todo ----- RENDER MAIN AND API CALL --------- //
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 7000);
+};
+const showErrorMessage = (message, where) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    messageDiv.style.color = "red";
+    messageDiv.style.fontSize = "50px";
+    messageDiv.style.fontWeight = "bold";
+    messageDiv.style.marginBot = "20px";
+    
+    where.appendChild(messageDiv);
+
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 7000);
+};
 const apiCall = async (url) => {
     try {
       const response = await fetch(url);
@@ -74,10 +81,13 @@ const showAll = async () => {
     }
 
 };
-//* Calling show all
-showAll();
+productos.addEventListener("click", (event) => {
+    event.preventDefault();
+    history.pushState(null, '', '/dashboard/dashboard.html#');
+    showAll();
+});
 
-// todo ----- SHOW BY ID --------- //
+//* ----- SHOW BY ID --------- //
 let buttonEdit;
 const showById = async (id) => {
     clearAll()
@@ -99,8 +109,15 @@ const showById = async (id) => {
     buttonLi.appendChild(buttonEdit);
     productDesc.appendChild(buttonLi);
     divRender.appendChild(productDesc)
+
+    buttonEdit.addEventListener("click", (event) => {
+        if (event.target.tagName === "BUTTON") {
+            const productId = event.target.getAttribute("data-id");
+            editForm(productId);
+            console.log('hola')
+        }
+    });
 };
-//*Details button
 productList.addEventListener("click", (event) => {
     if (event.target.tagName === "BUTTON") {
         const productId = event.target.getAttribute("data-id");
@@ -108,7 +125,7 @@ productList.addEventListener("click", (event) => {
     }
 });
 
-// todo ----- SHOW BY CATEGORY --------- //
+//* ---- SHOW BY CATEGORY --------- //
 const showByCategory = async (category) => {
     
     clearAll()
@@ -134,141 +151,170 @@ const showByCategory = async (category) => {
         }
     }
 };
-
-//* LINKS (show by cat)
-productos.addEventListener("click", (event) => {
-    event.preventDefault();
-    history.pushState(null, '', '/dashboard/dashboard.html#');         //! ESTO
-    showAll();
-});
 remeras.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/dashboard/dashboard.html#');         //! ESTO
+    history.pushState(null, '', '/dashboard/dashboard.html#');
     showByCategory("Camisetas")
 });
 pantalones.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/dashboard/dashboard.html#');         //! ESTO
+    history.pushState(null, '', '/dashboard/dashboard.html#');
     showByCategory("Pantalones")
 });
 zapatos.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/dashboard/dashboard.html#');         //! ESTO
+    history.pushState(null, '', '/dashboard/dashboard.html#');
     showByCategory("Zapatos")
 });
 accesorios.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/dashboard/dashboard.html#');         //! ESTO
+    history.pushState(null, '', '/dashboard/dashboard.html#');
     showByCategory("Accesorios")
 });
 
-// todo ----- FETCHING EDIT FORM --------- //
-document.addEventListener("click", async (event) => {
+//* ---- ADD PRODUCT FORM -------- //
 
-    if (event.target === buttonEdit) {
+const agregarForm = () => {
+    const formLable = document.createElement('form');
+    formLable.id = "new-product-form";
+
+    const template = `
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea><br><br>
+
+        <label for="imagen">Imagen URL:</label>
+        <input type="url" id="imagen" name="imagen" required><br><br>
+
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" name="categoria" required>
+            <option value="Camisetas">Camisetas</option>
+            <option value="Pantalones">Pantalones</option>
+            <option value="Zapatos">Zapatos</option>
+            <option value="Accesorios">Accesorios</option>
+        </select>
+        <br><br>
+
+        <label for="talla">Talla:</label>
+        <select id="talla" name="talla" required>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+        <br><br>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" step="0.01" required><br><br>
+
+        <button type="submit" id="submitNew">Enviar</button>
+    `;
+
+    formLable.innerHTML = template;
+    divRender.appendChild(formLable);
+
+    formLable.addEventListener('submit', async (event) => {
+        event.preventDefault();
         
-        const productId = buttonEdit.getAttribute("data-id");
-        
+        const formData = new FormData(formLable);
+        const data = Object.fromEntries(formData);
+
         try {
-            const response = await fetch(`${urlAll}/${productId}/edit`);
-            const formHtml = await response.text();
+            const response = await fetch(urlAll, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-            divRender.innerHTML += formHtml; 
+            if (response.ok) {
+                showSuccessMessage("Producto agregado con éxito", formLable);
+                formLable.reset();
+            } else {
+                showErrorMessage("Error al agregar el producto", formLable);
+            }
         } catch (error) {
-            console.error("Error fetching form:", error);
+            showErrorMessage("Error de conexión", formLable);
         }
-    }
-});
-// todo ----- FETCHING ADD-NEW FORM --------- //
-const addNewForm = async () => {
-    try {
-        const response = await fetch(`${urlAll}/newProduct`);
-        const formHtml = await response.text();
-        divRender.innerHTML += formHtml; 
-    } catch (error) {
-        console.error("Error fetching form:", error);
-    }
-}
+    });
+};
 agregarProducto.addEventListener("click", (event) => {
     clearAll()
-    addNewForm()
+    agregarForm()
 });
 
-/* //* ------------------------- SENDING FORM EDIT PRODUCT
+//* ----- UPDATE PRODUCTO FORM (initialized in getById)----- //
+const editForm = async (id) => {
+    clearAll()
 
-document.getElementById("editProductForm").addEventListener("submit", async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    const formLable = document.createElement('form');
+    formLable.id = "edit-form";
+    
+    const product = await apiCall(`${urlAll}/${id}`);
 
-    const productId = document.getElementById("productId").value;
-    const updatedProduct = {
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        imagen: document.getElementById("imagen").value,
-        categoria: document.getElementById("categoria").value,
-        talla: document.getElementById("talla").value,
-        precio: document.getElementById("precio").value
-    };
+    const formTemplate = `
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" value="${product.nombre}" required><br><br>
 
-    console.log("Sending update request for product ID:", productId);
-    console.log("Updated data:", updatedProduct);
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" required>${product.descripcion}</textarea><br><br>
 
-    try {
-        const response = await fetch(`${urlAll}/${productId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(updatedProduct)
-        });
+            <label for="imagen">Imagen URL:</label>
+            <input type="url" id="imagen" name="imagen" value="${product.imagen}" required><br><br>
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            <label for="categoria">Categoría:</label>
+            <select id="categoria" name="categoria" required>
+                <option value="Camisetas" ${product.categoria == 'Camisetas' ? 'selected' : ''}>Camisetas</option>
+                <option value="Pantalones" ${product.categoria == 'Pantalones' ? 'selected' : ''}>Pantalones</option>
+                <option value="Zapatos" ${product.categoria == 'Zapatos' ? 'selected' : ''}>Zapatos</option>
+                <option value="Accesorios" ${product.categoria == 'Accesorios' ? 'selected' : ''}>Accesorios</option>
+            </select>
+            <br><br>
+            <label for="talla">Talla:</label>
+            <select id="talla" name="talla" required>
+                <option value="XS" ${product.talla == 'XS' ? 'selected' : ''}>XS</option>
+                <option value="S" ${product.talla == 'S' ? 'selected' : ''}>S</option>
+                <option value="M" ${product.talla == 'M' ? 'selected' : ''}>M</option>
+                <option value="L" ${product.talla == 'L' ? 'selected' : ''}>L</option>
+                <option value="XL" ${product.talla == 'XL' ? 'selected' : ''}>XL</option>
+            </select>
+            <br><br>
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" step="0.01" value="${product.precio}" required><br><br>
+            <button type="submit">Enviar</button>
+        `
+    formLable.innerHTML = formTemplate
+    divRender.appendChild(formLable)
+
+    formLable.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const formData = new FormData(formLable);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch(urlAll, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                showSuccessMessage("Producto editado con éxito", formLable);
+            } else {
+                showErrorMessage("Error al editar el producto", formLable);
+            }
+        } catch (error) {
+            showErrorMessage("Error de conexión", formLable);
         }
+    });
+}
 
-        const result = await response.json();
-        console.log("Product updated successfully:", result);
-        alert("Product updated successfully!");
-    } catch (error) {
-        console.error("Error updating product:", error);
-        alert("Error updating product. Check the console for details.");
-    }
-});
+//* ------------------------- DELETE PRODUCT BUTTON
+//* ------------------------- SENDING FORM LOGOUT
+//* ------------------------- GENERACION DE LOCAL STORAGE:
+//* body.addEventListener(load) para bloquear el paso o usar (beforeload) --- > buscar en local storage si hay token return (vacio), sino redirecciona al login y mensaje de alerta
 
-//* ------------------------- SENDING FORM NEW PRODUCT
-
-document.getElementById("submitNew").addEventListener("click", async (event) => {
-    event.preventDefault(); 
-
-    const productData = {
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        imagen: document.getElementById("imagen").value,
-        categoria: document.getElementById("categoria").value,
-        talla: document.getElementById("talla").value,
-        precio: document.getElementById("precio").value
-    };
-
-    try {
-        const response = await fetch("https://project-break-2-2025.onrender.com/dashboard", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(productData)
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log(result)
-        alert("Product created successfully!");
-        clearAll()
-        addNewForm()
-    } catch (error) {
-        console.error("Error creating product:", error);
-        alert("Error creating product. Check the console for details.");
-    }
-});
- */
+showAll();

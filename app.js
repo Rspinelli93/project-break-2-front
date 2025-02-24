@@ -2,40 +2,50 @@ let urlAll = 'https://project-break-2-2025.onrender.com/products'
 
 const divRender = document.getElementById("div-render");
 
-//*links
-const remeras = document.getElementById("Remeras");
-const pantalones = document.getElementById("Pantalones");
-const zapatos = document.getElementById("Zapatos");
-const accesorios = document.getElementById("Accesorios");
-//*links
-
 const productList = document.createElement("ul");
 productList.id = "products-list";
 const productDesc = document.createElement("ul")
 productDesc.id = "product-description";
 
-// todo ----- NAVIGATION AND CLEARING DIV --------- //
-async function navigateTo(page) {
-    try {
-        const response = await fetch(`./pages/${page}.html`);
-        if (!response.ok) throw new Error("Page not found");
+const productos = document.getElementById("Productos");
+const remeras = document.getElementById("Remeras");
+const pantalones = document.getElementById("Pantalones");
+const zapatos = document.getElementById("Zapatos");
+const accesorios = document.getElementById("Accesorios");
+const loginLink = document.getElementById("Login");
 
-        const html = await response.text();
-        divRender.innerHTML = html;
-        history.pushState(null, '', `./${page}`); 
-        //! ESTO
-    } catch (error) {
-        
-        console.error("Error loading page:", error);
-        divRender.innerHTML = "<p>Page not found.</p>";
-    }
-}
 const clearAll = () => {
     divRender.innerHTML = '';
     productList.innerHTML = '';
-}
+};
+const showSuccessMessage = (message, where) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    messageDiv.style.color = "green";
+    messageDiv.style.fontSize = "25px";
+    messageDiv.style.fontWeight = "bold";
+    messageDiv.style.marginBot = "20px";
+    
+    where.appendChild(messageDiv);
 
-// todo ----- RENDER MAIN AND API CALL --------- //
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 7000);
+};
+const showErrorMessage = (message, where) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    messageDiv.style.color = "red";
+    messageDiv.style.fontSize = "25px";
+    messageDiv.style.fontWeight = "bold";
+    messageDiv.style.marginBot = "20px";
+    
+    where.appendChild(messageDiv);
+
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 7000);
+};
 const apiCall = async (url) => {
     try {
       const response = await fetch(url);
@@ -72,10 +82,13 @@ const showAll = async () => {
     }
 
 };
-//* Calling show all
+productos.addEventListener("click", (event) => {
+    event.preventDefault();
+    showAll();
+});
 showAll();
 
-// todo ----- SHOW BY ID --------- //
+//* ----- SHOW BY ID --------- //
 const showById = async (id) => {
     clearAll()
 
@@ -90,7 +103,6 @@ const showById = async (id) => {
     `;
     divRender.appendChild(productDesc)
 };
-//*Details button
 productList.addEventListener("click", (event) => {
     if (event.target.tagName === "BUTTON") {
         const productId = event.target.getAttribute("data-id");
@@ -98,7 +110,7 @@ productList.addEventListener("click", (event) => {
     }
 });
 
-// todo ----- SHOW BY CATEGORY --------- //
+//* ----- SHOW BY CATEGORY --------- //
 const showByCategory = async (category) => {
     
     clearAll()
@@ -124,42 +136,130 @@ const showByCategory = async (category) => {
         }
     }
 };
-
-//* LINKS (show by cat)
 remeras.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/');         //! ESTO
     showByCategory("Camisetas")
 });
 pantalones.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/');         //! ESTO
     showByCategory("Pantalones")
 });
 zapatos.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/');       //! ESTO
     showByCategory("Zapatos")
 });
 accesorios.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/');      //! ESTO
     showByCategory("Accesorios")
 });
 
+//* ------------------------- SENDING FORM LOGIN
+
+const CreateAnAccountLink = document.createElement('a')
+CreateAnAccountLink.href = "#"
+CreateAnAccountLink.innerText = "Create an Account"
+
+//TODO formulario login --> le das al boton ---> ese boton tiene un submit ---> el back procesa esos datos ---> si el token esta mal devolves status errado ---> if esta mal mensaje ---> if esta bien guardar token en local storage y mandarlo al dashbord (redirect)
+
+const loginFunction = () => {
+    const formLable = document.createElement('form');
+    formLable.id = "login-form";
+
+    const template = `
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required autocomplete="email">
+    <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+    <br>
+    <button type="submit" id="login-button">Login</button>
+    <br><br>
+    `;
+
+    formLable.innerHTML = template;
+    formLable.appendChild(CreateAnAccountLink)
+    divRender.appendChild(formLable);
 
 
+    formLable.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const formData = new FormData(formLable);
+        const dataRet = Object.fromEntries(formData);
 
+        try {
+            const response = await fetch(urlAll, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(dataRet),
+            });
 
+            if (!response.ok) {
+                throw new Error("Login failed");
+            }
 
+            const data = await response.json();
+            localStorage.setItem("token", data.token); // Save token
+            document.cookie = `authToken=${data.token}; path=/; Secure; HttpOnly`; // Save cookie
 
+            window.location.href = "/dashboard.html"; // Redirect after login
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("Invalid credentials");
+        }
+    });
+};
+loginLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    clearAll()
+    loginFunction()
+});
+//* ------------------------- SENDING FORM REGISTER
 
+//TODO ----- hay que arreglar el envio de datos al back
 
+const registerFunction = () => {
+    const formLable = document.createElement('form');
+    formLable.id = "register-form";
 
+    const template = `
+    <h2>Register</h2>
+    <input type="hidden" name="_method" value="POST">
+    <input type="email" name="email" placeholder="Email" required autocomplete="email">
+    <input type="password" name="password" placeholder="Password" required></br>
+    <button type="submit">Register</button></br></br>
+    `;
 
-//-------------------------------------------login temp
+    formLable.innerHTML = template;
+    divRender.appendChild(formLable);
 
-const loginButton = document.getElementById('login-button')
-loginButton.addEventListener('click', () => {
-    window.location.href = '/dashboard/dashboard.html';
-})
+    formLable.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const formData = new FormData(formLable);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch(urlAll, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                showErrorMessage("Usuario no disponible", formLable);
+                throw new Error("Usuario no disponible");
+            } else {
+                clearAll()
+                loginFunction()
+            }
+        } catch (error) {
+            console.error('Error creating the account: ', error);
+            alert("Use different credentials");
+        }
+    });
+};
+CreateAnAccountLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    clearAll()
+    registerFunction()
+});
