@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <header>
+    <header id="header">
         <h1>Clothing Online Store</h1>
         <nav>
             <ul id="nav-menu">
@@ -16,20 +16,18 @@
                 <li><a id="Pantalones" href="#">Pantalones</a></li>
                 <li><a id="Zapatos" href="#">Zapatos</a></li>
                 <li><a id="Accesorios" href="#">Accesorios</a></li>
-                <li><a id="Login" href="/">Login</a></li>
+                <li><a id="Login" href="#" onclick="navigateTo('loginForm')">Login</a></li>
             </ul>
         </nav>
     </header>
     
     <main>
-        <ul id="products-list"></ul>
-        <ul id="product-description"></ul>
-        <form id="form-container"></form>
+       <div id="div-render"></div>
     </main>
     
     <footer>
         <p>&copy; 2025 My Project Break. All rights reserved.</p>
     </footer>
-    <script src="/script.js"></script>
+    <script src="/app.js"></script>
 </body>
 </html>

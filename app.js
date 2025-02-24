@@ -1,17 +1,41 @@
 let urlAll = 'https://project-break-2-2025.onrender.com/products'
-let urlDash = 'https://project-break-2-2025.onrender.com/dashboard'
-const productList = document.getElementById("products-list");
-const productDesc = document.getElementById("product-description");
 
+const divRender = document.getElementById("div-render");
+
+//*links
 const remeras = document.getElementById("Remeras");
 const pantalones = document.getElementById("Pantalones");
 const zapatos = document.getElementById("Zapatos");
 const accesorios = document.getElementById("Accesorios");
-const agregarProducto = document.getElementById("agregarProducto");
-const logoutLink = document.getElementById("Logout");
-const loginLink = document.getElementById("Login");
-const formContainer = document.getElementById("form-container");
+//*links
 
+const productList = document.createElement("ul");
+productList.id = "products-list";
+const productDesc = document.createElement("ul")
+productDesc.id = "product-description";
+
+// todo ----- NAVIGATION AND CLEARING DIV --------- //
+async function navigateTo(page) {
+    try {
+        const response = await fetch(`./pages/${page}.html`);
+        if (!response.ok) throw new Error("Page not found");
+
+        const html = await response.text();
+        divRender.innerHTML = html;
+        history.pushState(null, '', `./${page}`); 
+        //! ESTO
+    } catch (error) {
+        
+        console.error("Error loading page:", error);
+        divRender.innerHTML = "<p>Page not found.</p>";
+    }
+}
+const clearAll = () => {
+    divRender.innerHTML = '';
+    productList.innerHTML = '';
+}
+
+// todo ----- RENDER MAIN AND API CALL --------- //
 const apiCall = async (url) => {
     try {
       const response = await fetch(url);
@@ -23,14 +47,6 @@ const apiCall = async (url) => {
     } catch (error) {
       console.error(error);
 }};
-
-//* FUNCTIONS
-
-const clearAll = () => {
-    productList.innerHTML = '';
-    productDesc.innerHTML = '';
-    formContainer.style.display = 'none';
-}
 const showAll = async () => {
     
     clearAll()
@@ -49,15 +65,17 @@ const showAll = async () => {
             `;
 
             productList.appendChild(productLi);
+            divRender.appendChild(productList)
         } catch (error) {
             console.error('Error fetching product:', error);
         }
     }
 
 };
+//* Calling show all
 showAll();
-//TODO ACA TIENE CON BOTON PARA EDITAR
-let buttonEdit;
+
+// todo ----- SHOW BY ID --------- //
 const showById = async (id) => {
     clearAll()
 
@@ -70,14 +88,17 @@ const showById = async (id) => {
         <li>Talla: ${product.talla}</li>
         <li>${product.precio} €</li>
     `;
-
-    buttonEdit = document.createElement("button");
-    buttonEdit.textContent = "Edit Product";
-    buttonEdit.setAttribute("data-id", product._id);
-    const buttonLi = document.createElement("li");
-    buttonLi.appendChild(buttonEdit);
-    productDesc.appendChild(buttonLi);
+    divRender.appendChild(productDesc)
 };
+//*Details button
+productList.addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+        const productId = event.target.getAttribute("data-id");
+        showById(productId);
+    }
+});
+
+// todo ----- SHOW BY CATEGORY --------- //
 const showByCategory = async (category) => {
     
     clearAll()
@@ -97,86 +118,31 @@ const showByCategory = async (category) => {
             `;
 
             productList.appendChild(productLi);
+            divRender.appendChild(productList)
         } catch (error) {
             console.error('Error fetching product:', error);
         }
     }
-
 };
 
-
-//* LINKS
+//* LINKS (show by cat)
 remeras.addEventListener("click", (event) => {
     event.preventDefault();
+    history.pushState(null, '', '/remeras');         //! ESTO
     showByCategory("Camisetas")
 });
 pantalones.addEventListener("click", (event) => {
     event.preventDefault();
+    history.pushState(null, '', '/pantalones');         //! ESTO
     showByCategory("Pantalones")
 });
 zapatos.addEventListener("click", (event) => {
     event.preventDefault();
+    history.pushState(null, '', '/zapatos');         //! ESTO
     showByCategory("Zapatos")
 });
 accesorios.addEventListener("click", (event) => {
     event.preventDefault();
+    history.pushState(null, '', '/accesorios');         //! ESTO
     showByCategory("Accesorios")
 });
-
-//* EVENTS
-
-//?Login Form
-loginLink.addEventListener("click", function(event) {
-    const loginForm = `
-        <h2>Login</h2>
-        <input type="hidden" name="_method" value="POST">
-        <input type="email" name="email" placeholder="Email" required autocomplete="email">
-        <input type="password" name="password" placeholder="Password" required autocomplete="current-password"></br>
-        <button type="submit">Login</button></br></br>
-        <a href="/register">Create an Account</a>
-        `;
-    clearAll()
-    formContainer.style.display = 'block'
-    event.preventDefault(); 
-    console.log(loginForm)
-    formContainer.innerHTML = loginForm;
-});
-
-//?Details button
-productList.addEventListener("click", (event) => {
-    if (event.target.tagName === "BUTTON") {
-        const productId = event.target.getAttribute("data-id");
-        showById(productId);
-    }
-});
-//?Edit form
-document.addEventListener("click", async (event) => {
-
-    if (event.target === buttonEdit) {
-        
-        const productId = buttonEdit.getAttribute("data-id");
-
-        try {
-            const response = await fetch(`${urlDash}/${productId}/edit`);
-            const formHtml = await response.text();
-
-            formContainer.innerHTML = formHtml; 
-        } catch (error) {
-            //! SI NO ESTA LOGEADO; REDIRECT A LOGIN
-            console.error("Error fetching form:", error);
-        }
-    }
-});
-
-
-
-/* agregarProducto.addEventListener("click", () => {
-    clearAll()
-});
- */
-//*Evento edit product
-//*Evento agregar producto
-
-//*Pagina login
-//*Pagina Create account
-//*Pagina logout
