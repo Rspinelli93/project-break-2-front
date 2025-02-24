@@ -128,21 +128,38 @@ const showByCategory = async (category) => {
 //* LINKS (show by cat)
 remeras.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/remeras');         //! ESTO
+    history.pushState(null, '', '/');         //! ESTO
     showByCategory("Camisetas")
 });
 pantalones.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/pantalones');         //! ESTO
+    history.pushState(null, '', '/');         //! ESTO
     showByCategory("Pantalones")
 });
 zapatos.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/zapatos');         //! ESTO
+    history.pushState(null, '', '/');       //! ESTO
     showByCategory("Zapatos")
 });
 accesorios.addEventListener("click", (event) => {
     event.preventDefault();
-    history.pushState(null, '', '/accesorios');         //! ESTO
+    history.pushState(null, '', '/');      //! ESTO
     showByCategory("Accesorios")
 });
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------login temp
+
+const loginButton = document.getElementById('login-button')
+loginButton.addEventListener('click', () => {
+    window.location.href = '/dashboard/dashboard.html';
+})

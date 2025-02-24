@@ -162,7 +162,6 @@ document.addEventListener("click", async (event) => {
 
             formContainer.innerHTML = formHtml; 
         } catch (error) {
-            //! SI NO ESTA LOGEADO; REDIRECT A LOGIN
             console.error("Error fetching form:", error);
         }
     }

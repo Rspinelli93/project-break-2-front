@@ -87,7 +87,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content:space-evenly
+    justify-content: space-around;
 }
 
 /* Section Styling */
@@ -264,3 +264,11 @@ input, textarea {
     color: #2f3d4c;
 }
 /** FORMS --------------------------------- */ 
+#div-render {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
