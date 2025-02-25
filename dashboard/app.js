@@ -21,7 +21,7 @@ const showSuccessMessage = (message, where) => {
     const messageDiv = document.createElement('div');
     messageDiv.textContent = message;
     messageDiv.style.color = "green";
-    messageDiv.style.fontSize = "50px";
+    messageDiv.style.fontSize = "25px";
     messageDiv.style.fontWeight = "bold";
     messageDiv.style.marginBot = "20px";
     
@@ -35,7 +35,7 @@ const showErrorMessage = (message, where) => {
     const messageDiv = document.createElement('div');
     messageDiv.textContent = message;
     messageDiv.style.color = "red";
-    messageDiv.style.fontSize = "50px";
+    messageDiv.style.fontSize = "25px";
     messageDiv.style.fontWeight = "bold";
     messageDiv.style.marginBot = "20px";
     
@@ -62,6 +62,10 @@ const showAll = async () => {
 
     const data = await apiCall(urlAll);
 
+    if (!data) {
+        divRender.innerHTML = '<h2>Debes estar logeado para acceder al Dashboard - <a href="../index.html">HOME</a></h2>'
+    }
+
     for (const element of data) {
         try {
 
@@ -86,9 +90,9 @@ productos.addEventListener("click", (event) => {
     history.pushState(null, '', '/dashboard/dashboard.html#');
     showAll();
 });
-
 //* ----- SHOW BY ID --------- //
 let buttonEdit;
+let buttonEliminate;
 const showById = async (id) => {
     clearAll()
 
@@ -108,15 +112,51 @@ const showById = async (id) => {
     const buttonLi = document.createElement("li");
     buttonLi.appendChild(buttonEdit);
     productDesc.appendChild(buttonLi);
+
+    buttonEliminate = document.createElement("button");
+    buttonEliminate.textContent = "Eliminate Product";
+    buttonEliminate.setAttribute("data-id", product._id);
+    const buttonElimLi = document.createElement("li");
+    buttonElimLi.appendChild(buttonEliminate);
+    productDesc.appendChild(buttonElimLi);
+
     divRender.appendChild(productDesc)
 
     buttonEdit.addEventListener("click", (event) => {
         if (event.target.tagName === "BUTTON") {
             const productId = event.target.getAttribute("data-id");
             editForm(productId);
-            console.log('hola')
         }
     });
+
+    buttonEliminate.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const isConfirmed = window.confirm("Estas seguro que quieres eliminar el Producto?");
+        if (!isConfirmed) return; 
+
+        const productId = event.target.getAttribute("data-id");
+
+        try {
+            const response = await fetch(`${urlAll}/${productId}/delete`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (response.ok) {
+                showSuccessMessage("Producto eliminado con éxito, redirecting...", buttonEliminate);
+
+                setTimeout(() => {
+                    clearAll();
+                    window.location.href = "/dashboard/dashboard.html";
+                }, 3000);
+            } else {
+                showErrorMessage("Error al eliminar el producto", buttonEliminate);
+            }
+        } catch (error) {
+            showErrorMessage("Error de conexión", buttonEliminate);
+        }
+    });    
 };
 productList.addEventListener("click", (event) => {
     if (event.target.tagName === "BUTTON") {
@@ -124,7 +164,6 @@ productList.addEventListener("click", (event) => {
         showById(productId);
     }
 });
-
 //* ---- SHOW BY CATEGORY --------- //
 const showByCategory = async (category) => {
     
@@ -171,9 +210,7 @@ accesorios.addEventListener("click", (event) => {
     history.pushState(null, '', '/dashboard/dashboard.html#');
     showByCategory("Accesorios")
 });
-
 //* ---- ADD PRODUCT FORM -------- //
-
 const agregarForm = () => {
     const formLable = document.createElement('form');
     formLable.id = "new-product-form";
@@ -244,8 +281,7 @@ agregarProducto.addEventListener("click", (event) => {
     clearAll()
     agregarForm()
 });
-
-//* ----- UPDATE PRODUCTO FORM (initialized in getById)----- //
+//* ----- UPDATE PRODUCTO FORM (init at getById)----- //
 const editForm = async (id) => {
     clearAll()
 
@@ -312,9 +348,6 @@ const editForm = async (id) => {
     });
 }
 
-//* ------------------------- DELETE PRODUCT BUTTON
-//* ------------------------- SENDING FORM LOGOUT
-//* ------------------------- GENERACION DE LOCAL STORAGE:
-//* body.addEventListener(load) para bloquear el paso o usar (beforeload) --- > buscar en local storage si hay token return (vacio), sino redirecciona al login y mensaje de alerta
+//* MISSING LOGIN, REGISTER AND LOGOUT
 
 showAll();
