@@ -144,17 +144,17 @@ const showById = async (id) => {
             });
 
             if (response.ok) {
-                showSuccessMessage("Producto eliminado con éxito, redirecting...", buttonEliminate);
+                showSuccessMessage("Producto eliminado con éxito, redirecting...", buttonElimLi);
 
                 setTimeout(() => {
                     clearAll();
                     window.location.href = "/dashboard/dashboard.html";
                 }, 3000);
             } else {
-                showErrorMessage("Error al eliminar el producto", buttonEliminate);
+                showErrorMessage("Error al eliminar el producto", buttonElimLi);
             }
         } catch (error) {
-            showErrorMessage("Error de conexión", buttonEliminate);
+            showErrorMessage("Error de conexión", buttonElimLi);
         }
     });    
 };
@@ -259,6 +259,9 @@ const agregarForm = () => {
         const formData = new FormData(formLable);
         const data = Object.fromEntries(formData);
 
+        if (data.precio) {
+            data.precio = Number(data.precio);
+        }
         try {
             const response = await fetch(urlAll, {
                 method: 'POST',
@@ -330,8 +333,11 @@ const editForm = async (id) => {
         const formData = new FormData(formLable);
         const data = Object.fromEntries(formData);
 
+        if (data.precio) {
+            data.precio = Number(data.precio);
+        }
         try {
-            const response = await fetch(urlAll, {
+            const response = await fetch(`${urlAll}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -339,6 +345,10 @@ const editForm = async (id) => {
 
             if (response.ok) {
                 showSuccessMessage("Producto editado con éxito", formLable);
+                setTimeout(() => {
+                    clearAll();
+                    showById(id);
+                }, 3000);
             } else {
                 showErrorMessage("Error al editar el producto", formLable);
             }
