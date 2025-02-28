@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     
     if (!token) {
-        window.location.href = "index.html";
+        window.location.href = "/index.html";
     }
 });
 
@@ -383,7 +383,7 @@ const logoutFunction = async () => {
             throw new Error("Failed to logout");
         }
         localStorage.removeItem("token");
-        window.location.href = "index.html";
+        window.location.href = "/index.html";
     } catch (error) {
         console.error("Logout error:", error);
         alert("Not possible to logout");

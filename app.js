@@ -194,7 +194,7 @@ const loginFunction = () => {
             localStorage.setItem("token", data.token); 
             console.log(data)
 
-            window.location.href = "dashboard/dashboard.html";
+            window.location.href = "/dashboard/dashboard.html";
         } catch (error) {
             console.error("Login error:", error);
             alert("Invalid credentials");
