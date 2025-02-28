@@ -12,6 +12,15 @@ const pantalones = document.getElementById("Pantalones");
 const zapatos = document.getElementById("Zapatos");
 const accesorios = document.getElementById("Accesorios");
 const agregarProducto = document.getElementById("agregar-producto")
+const logoutLink = document.getElementById('Logout')
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        window.location.href = "/index.html";
+    }
+});
 
 const clearAll = () => {
     divRender.innerHTML = '';
@@ -357,7 +366,26 @@ const editForm = async (id) => {
         }
     });
 }
-
-//* MISSING LOGIN, REGISTER AND LOGOUT
+//* ----- LOGOUT ----- //
+const logoutFunction = async () => {
+    try {
+        const response = await fetch('https://project-break-2-2025.onrender.com/logout', {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+            throw new Error("Failed to logout");
+        }
+        localStorage.removeItem("token");
+        window.location.href = "/index.html";
+    } catch (error) {
+        console.error("Logout error:", error);
+        alert("Not possible to logout");
+    }
+};
+logoutLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    logoutFunction()
+})
 
 showAll();

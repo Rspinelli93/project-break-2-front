@@ -153,13 +153,10 @@ accesorios.addEventListener("click", (event) => {
     showByCategory("Accesorios")
 });
 
-//* ------------------------- SENDING FORM LOGIN
-
+//* ----- LOGIN --------- //
 const CreateAnAccountLink = document.createElement('a')
 CreateAnAccountLink.href = "#"
 CreateAnAccountLink.innerText = "Create an Account"
-
-//TODO formulario login --> le das al boton ---> ese boton tiene un submit ---> el back procesa esos datos ---> si el token esta mal devolves status errado ---> if esta mal mensaje ---> if esta bien guardar token en local storage y mandarlo al dashbord (redirect)
 
 const loginFunction = () => {
     const formLable = document.createElement('form');
@@ -167,8 +164,8 @@ const loginFunction = () => {
 
     const template = `
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required autocomplete="email">
-    <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+    <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email">
+    <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
     <br>
     <button type="submit" id="login-button">Login</button>
     <br><br>
@@ -186,10 +183,9 @@ const loginFunction = () => {
         const dataRet = Object.fromEntries(formData);
 
         try {
-            const response = await fetch(urlAll, {
+            const response = await fetch(`${urlAll}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify(dataRet),
             });
 
@@ -198,10 +194,10 @@ const loginFunction = () => {
             }
 
             const data = await response.json();
-            localStorage.setItem("token", data.token); // Save token
-            document.cookie = `authToken=${data.token}; path=/; Secure; HttpOnly`; // Save cookie
+            localStorage.setItem("token", data.token); 
+            console.log(data)
 
-            window.location.href = "/dashboard.html"; // Redirect after login
+            window.location.href = "/dashboard/dashboard.html";
         } catch (error) {
             console.error("Login error:", error);
             alert("Invalid credentials");
@@ -213,10 +209,8 @@ loginLink.addEventListener('click', (event) => {
     clearAll()
     loginFunction()
 });
-//* ------------------------- SENDING FORM REGISTER
 
-//TODO ----- hay que arreglar el envio de datos al back
-
+//* ----- REGISTER --------- //
 const registerFunction = () => {
     const formLable = document.createElement('form');
     formLable.id = "register-form";
@@ -239,18 +233,21 @@ const registerFunction = () => {
         const data = Object.fromEntries(formData);
 
         try {
-            const response = await fetch(urlAll, {
+            const response = await fetch(`${urlAll}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
             if (!response.ok) {
-                showErrorMessage("Usuario no disponible", formLable);
-                throw new Error("Usuario no disponible");
+                showErrorMessage("Usa otras credenciales", formLable);
+                throw new Error("Usa otras credenciales");
             } else {
-                clearAll()
-                loginFunction()
+                showSuccessMessage("Usuario creado con exito", formLable);
+                setTimeout(() => {
+                    clearAll()
+                    loginFunction()
+                }, 2000);
             }
         } catch (error) {
             console.error('Error creating the account: ', error);
