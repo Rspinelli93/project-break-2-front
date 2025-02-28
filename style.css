@@ -191,7 +191,7 @@ h3 {
 img {
     max-width: 200px;
     clip-path: circle(50%);
-    transition: all 0.7s ease-in-out;
+    transition: all 0.8s ease-in-out;
 }
 img:hover {
     max-width: 250px;

@@ -56,7 +56,13 @@ const showErrorMessage = (message, where) => {
 };
 const apiCall = async (url) => {
     try {
-      const response = await fetch(url);
+      const token = localStorage.getItem('token');
+      const response = await fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+      });
       if (!response.ok) {
         throw new Error('Can not load the Data Base');
       }

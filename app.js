@@ -87,7 +87,6 @@ productos.addEventListener("click", (event) => {
     showAll();
 });
 showAll();
-
 //* ----- SHOW BY ID --------- //
 const showById = async (id) => {
     clearAll()
@@ -109,7 +108,6 @@ productList.addEventListener("click", (event) => {
         showById(productId);
     }
 });
-
 //* ----- SHOW BY CATEGORY --------- //
 const showByCategory = async (category) => {
     
@@ -152,7 +150,6 @@ accesorios.addEventListener("click", (event) => {
     event.preventDefault();
     showByCategory("Accesorios")
 });
-
 //* ----- LOGIN --------- //
 const CreateAnAccountLink = document.createElement('a')
 CreateAnAccountLink.href = "#"
@@ -209,7 +206,6 @@ loginLink.addEventListener('click', (event) => {
     clearAll()
     loginFunction()
 });
-
 //* ----- REGISTER --------- //
 const registerFunction = () => {
     const formLable = document.createElement('form');

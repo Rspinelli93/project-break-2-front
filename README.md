@@ -1,4 +1,4 @@
-📌 Proyecto Break 2 (Front-End)
+📌 Proyecto Break 2 - (Front-End)
 
 ¡Bienvenido a Proyecto Break 2! 🎉
 
