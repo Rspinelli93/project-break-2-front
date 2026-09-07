@@ -1,24 +1,34 @@
-📌 Proyecto Break 2 - (Front-End)
+# Project Break · Storefront
 
-¡Bienvenido a Proyecto Break 2! 🎉
+A vanilla JavaScript frontend for the Project Break product API. It renders a clothing catalogue, filters products by category, and includes a separate administration dashboard.
 
-Este es el repositorio del front-end de nuestra aplicación, donde los usuarios pueden explorar productos, filtrarlos por categoría y gestionar su cuenta. Además, los administradores tienen la capacidad de agregar, editar y eliminar productos desde el dashboard.
+**Collection:** Featured applications · [Project directory](https://github.com/Rspinelli93/Rspinelli93/blob/main/PROJECTS.md)
 
-🚀 Funcionalidades principales
+**Related repository:** [project-break-2-2025](https://github.com/Rspinelli93/project-break-2-2025)
 
-🔹 Explorar productos: Desde /index, los usuarios pueden ver todos los productos disponibles y filtrarlos por categoría a través de la barra de navegación.
+## Run locally
 
-🔹 Autenticación: Los usuarios pueden registrarse y acceder a su cuenta mediante la funcionalidad de Login/Register.
+Serve the repository with a local static HTTP server, for example using Python 3:
 
-🔹 Panel de administración: Una vez logueado, en /dashboard/dashboard, los usuarios con permisos pueden gestionar los productos:
+```bash
+git clone https://github.com/Rspinelli93/project-break-2-front.git
+cd project-break-2-front
+python3 -m http.server 8000
+```
 
-📌 Agregar nuevos productos
+Open `http://localhost:8000`. No build step is required.
 
-✏️ Editar productos existentes
+## Implementation notes
 
-🗑️ Eliminar productos
+The API base address is currently hard-coded in `app.js` and `dashboard/app.js`. Point those requests at your own running Project Break backend when working locally. The repository’s hosted endpoint has not been verified as available.
 
-🛠️ Tecnologías utilizadas
+## Repository guide
 
-✅ HTML, CSS y JavaScript para la estructura y estilos del proyecto.
-✅ Consumo de API para gestión de datos.
+- [`app.js`](app.js)
+- [`dashboard/`](dashboard/)
+- [`index.html`](index.html)
+- [`style.css`](style.css)
+
+---
+
+[Back to my GitHub profile](https://github.com/Rspinelli93)
